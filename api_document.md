@@ -17,6 +17,7 @@ Input Format
     password: string,
     name: string
     age: int
+    gender : string
     badminton : int,
     basketball: int,
     table_tennis: int
@@ -187,6 +188,125 @@ Response Format
 
 ```
 
+# activity related API
+
+### Get activity list
+
+API URL: /api/activity
+
+Method: GET
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Response Format
+```
+{
+
+    activity:[
+        {
+            id: int,
+            name : string
+        },
+        {
+            id: int,
+            name : string
+        },
+        ...
+    ]
+}
+
+```
+### Get the activity detail
+
+API URL:/api/activity/:activity_id
+
+Method: GET
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Response Format
+```
+{
+    status: string,
+    time: string,
+    stadium : {
+        name: string,
+        fee: string,
+        bathroom: bool,
+        air_condition: bool,
+        vending: bool,
+        water: bool
+
+    },    
+    creator: {
+        id: int,
+        name: string,
+        picture: string
+    },
+    users :[
+        id: int,
+        name: string,
+        picture: string
+
+
+    ]
+
+}
+```
+
+### join activity
+
+API URL: /api/activity/:activity_id/join
+
+Method: POST
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+
+Response Format
+```
+{
+    activity_id: int
+}
+```
+
+### leave activity
+API URL: /api/activity/:activity/leave
+
+Method: DELETE
+
+Header
+{
+    Authorization: "Bearer ${JWT}"
+}
+Response Format
+
+{
+    activity: int
+}
+
+
 # Stadium related API
 
 
@@ -226,45 +346,10 @@ Response Format
 
 ```
 
-### Get activity list
-
-API URL: /api/stadium/:catogory/activity
-
-catogory: badminton, basketball, table_tennis, baseball
-
-Method: GET
-
-response type: application/json
-
-Header
-```
-{
-    Authorization: "Bearer ${JWT}"
-}
-```
-
-Response Format
-```
-{
-
-    activity:[
-        {
-            id: int,
-            name : string
-        },
-        {
-            id: int,
-            name : string
-        },
-        ...
-    ]
-}
-
-```
 
 ### Get the stadium available time
 
-API URL: /api/stadium/:catogory/activity/:stadium_id/:date
+API URL: /api/stadium/:catogory/:stadium_id/:date
 
 Method: GET
 
@@ -299,50 +384,9 @@ Response Format
 
 
 
-
-### Get the activity detail
-
-API URL:/api/stadium/:catogory/activity/:activity_id
-
-Method: GET
-
-response type: application/json
-
-Header
-```
-{
-    Authorization: "Bearer ${JWT}"
-}
-```
-
-Response Format
-```
-{
-    status: string,
-    time: string,
-    stadium : {
-        name: string,
-        fee: string,
-        bathroom: bool,
-        air_condition: bool,
-        vending: bool,
-        water: bool
-
-    },    
-    creator: {
-        id: int,
-        name: string,
-        picture: string
-    }
-
-}
-```
-
-
-
 ### create activity 
 
-API URL: /api/stadium/:catogory/activity/:stadium_id/:date/:time
+API URL: /api/stadium/:catogory/:stadium_id/:date/:time
 
 Method: POST
 
@@ -363,6 +407,7 @@ Input Format
     people: int
     level : int
     desciption: string
+   
 }
 ```
 
@@ -373,30 +418,6 @@ Response Format
     activity_id: int
 }
 ```
-
-### join activity
-
-API URL: /api/stadium/:activity_id/join
-
-Method: POST
-
-response type: application/json
-
-Header
-```
-{
-    Authorization: "Bearer ${JWT}"
-}
-```
-
-
-Response Format
-```
-{
-    activity_id: int
-}
-```
-
 
 
 
