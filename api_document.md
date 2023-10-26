@@ -242,6 +242,7 @@ Response Format
 ```
 {
     status: string,
+    peoples : int
     time: string,
     stadium : {
         name: string,
@@ -258,21 +259,21 @@ Response Format
         picture: string
     },
     users :[
-        id: int,
-        name: string,
-        picture: string
-
-
+        {
+            id: int,
+            name: string,
+            picture: string
+        }, ...
     ]
 
 }
 ```
 
-### join activity
+### list my activities
 
-API URL: /api/activity/:activity_id/join
+API URL:/api/activity/list/:status
 
-Method: POST
+Method: GET
 
 response type: application/json
 
@@ -283,11 +284,21 @@ Header
 }
 ```
 
-
 Response Format
 ```
 {
-    activity_id: int
+
+    activity:[
+        {
+            id: int,
+            name : string
+        },
+        {
+            id: int,
+            name : string
+        },
+        ...
+    ]
 }
 ```
 
@@ -297,15 +308,17 @@ API URL: /api/activity/:activity/leave
 Method: DELETE
 
 Header
+```
 {
     Authorization: "Bearer ${JWT}"
 }
+```
 Response Format
-
+```
 {
     activity: int
 }
-
+```
 
 # Stadium related API
 
