@@ -1,3 +1,6 @@
+CREATE DATABASE stadiums;
+USE stadiums;
+
 CREATE TABLE users (
     user_id INT PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
