@@ -13,7 +13,7 @@ response type: application/json
 Input Format
 ```
 {
-    email: string,
+    account: string,
     password: string,
     name: string
     age: int
@@ -22,7 +22,7 @@ Input Format
     basketball: int,
     table_tennis: int
     baseball : int
-    
+    self_intro : str 
     
 }
 ```
@@ -45,7 +45,7 @@ response response type: application/json
 Input Format
 ```
 {
-    email: string,
+    account: string,
     password: string,
 }
 ```
@@ -76,7 +76,12 @@ Input Format
 ```
 {
     name: string,
+    account : string
     self_intro: string
+    badminton : int,
+    basketball: int,
+    table_tennis: int
+    baseball : int
 }
 ```
 
@@ -86,6 +91,41 @@ Response Format
     user_id: int
 }
 ```
+
+
+
+### Update User password API
+
+API URL: /api/user/profile/password
+
+Method: PUT
+
+response response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+
+
+Input Format
+```
+{
+   old_password: string,
+   new_password: string
+}
+```
+
+Response Format
+```
+{
+    token: JWT
+}
+```
+
 
 ### Update User Profile Picture API
 
@@ -140,7 +180,7 @@ Response Format
 {
     user_id: int,
     name: string,
-    email: string,
+    account: string,
     picture: string,
     badminton : int,
     basketball: int,
@@ -171,14 +211,17 @@ Response Format
     activity : [
         {
             id: int
+            picture : string
             stadium_id: int
         },
         {
             id: int  
+            picture : string
             stadium_id: int
         },
         {
             id: int
+            picture : string
             stadium_id: int
         }
         
@@ -212,10 +255,12 @@ Response Format
     activity:[
         {
             id: int,
+            picture : string
             name : string
         },
         {
             id: int,
+            picture : string
             name : string
         },
         ...
@@ -292,10 +337,13 @@ Response Format
         {
             id: int,
             name : string
+            picture: string
+
         },
         {
             id: int,
             name : string
+            picture: string
         },
         ...
     ]
@@ -316,7 +364,7 @@ Header
 Response Format
 ```
 {
-    activity: int
+    activity_id: int
 }
 ```
 
@@ -347,11 +395,13 @@ Response Format
     stadium:[
         {
             statium_id: int,
-            name : string
+            name : string,
+            picture: string
         },
         {
             statium_id: int,
             name : string
+            picture : string
         },
         ...
     ]
@@ -457,7 +507,7 @@ Response Format
    
     event: [
         {
-            event_id: int,
+   
             stadium_id: int,
             activity_id: int
             name: string,
@@ -470,7 +520,7 @@ Response Format
 
 ### Read event
 
-API URL: /api/event/:event_id/read
+API URL: /api/event/:activity_id/read
 
 Method: POST
 
@@ -486,6 +536,65 @@ Header
 Response Format
 ```
 {
-    event_id: int
+    activity_id: int
 }
 ```
+
+
+# Feedback
+
+### stadium information 
+API URL: /api/feedback/:stadium_id
+
+Method: get
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Response Format
+```
+{
+    name: string,
+    fee: string,
+    bathroom: bool,
+    air_condition: bool,
+    vending: bool,
+    water: bool
+}
+``````
+
+### summit feeback
+API URL: /api/feedback/:stadium_id
+
+Method: POST
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Input Format
+```
+{
+    type: string 
+    problem: string
+   
+}
+```
+Response Format
+```
+{
+    feedback_id: int
+}
+```
+
