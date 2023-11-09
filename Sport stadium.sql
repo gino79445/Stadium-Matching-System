@@ -32,7 +32,8 @@ CREATE TABLE "Stadiums" (
   "max_capacity" increment NOT NULL,
   "availble" bool NOT NULL,
   "picture" vanchar DEFAULT 'http://test.com',
-  "admin_id" int NOT NULL
+  "admin_id" int NOT NULL,
+  "rule" text
 );
 
 CREATE TABLE "TimeSlots" (

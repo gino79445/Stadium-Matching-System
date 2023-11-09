@@ -13,7 +13,7 @@ response type: application/json
 Input Format
 ```
 {
-    account: string,
+    email: string,
     password: string,
     name: string
     age: int
@@ -45,7 +45,7 @@ response response type: application/json
 Input Format
 ```
 {
-    account: string,
+    email: string,
     password: string,
 }
 ```
@@ -76,7 +76,7 @@ Input Format
 ```
 {
     name: string,
-    account : string
+    email : string
     self_intro: string
     badminton : int,
     basketball: int,
@@ -180,12 +180,13 @@ Response Format
 {
     user_id: int,
     name: string,
-    account: string,
+    email: string,
     picture: string,
     badminton : int,
     basketball: int,
     table_tennis: int
     baseball : int
+    rqcode: string
 }
 ```
 # Home
@@ -286,7 +287,7 @@ Header
 Response Format
 ```
 {
-    status: string,
+    status: bool,
     peoples : int
     time: string,
     stadium : {
@@ -371,6 +372,7 @@ Response Format
 # Stadium related API
 
 
+
 ### Get stadium list
 
 API URL: /api/stadium/:catogory/
@@ -418,6 +420,7 @@ Method: GET
 
 response type: application/json
 
+
 Header
 ```
 {
@@ -430,7 +433,7 @@ Response Format
 {
     data: {
         times: {
-            09:00: string,
+            09:00: string, 
             10:00: string,
             11:00: string,
                 ...
@@ -445,6 +448,34 @@ Response Format
 }
 ```
 
+## get stadium detail
+
+API URL:/api/stadium/:catogory/:stadium_id
+
+Method: GET
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Response Format
+```
+{
+    name: string,
+    fee: string,
+    bathroom: bool,
+    air_condition: bool,
+    vending: bool,
+    water: bool
+    rule: string
+
+}
+```
 
 
 ### create activity 
