@@ -2,4 +2,5 @@
 .env
 *.sw*
 /nginx
+.Ds_Store
 /mysql_data
