@@ -1,0 +1,5 @@
+/node_modules
+.env
+*.sw*
+/nginx
+/mysql_data
