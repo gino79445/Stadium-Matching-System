@@ -69,6 +69,13 @@ CREATE TABLE `Equipments` (
   `vending` bool DEFAULT 0
 );
 
+CREATE TABLE `sessions` (
+  `session_id` varchar(128) COLLATE utf8mb4_bin NOT NULL,
+  `expires` int(11) unsigned NOT NULL,
+  `data` mediumtext COLLATE utf8mb4_bin,
+  PRIMARY KEY (`session_id`)
+);
+
 ALTER TABLE `Level` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
 
 ALTER TABLE `Order_info` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
@@ -87,4 +94,5 @@ ALTER TABLE `Equipments` ADD FOREIGN KEY (`stadium_id`) REFERENCES `Stadiums` (`
 
 ALTER TABLE `Activity` ADD FOREIGN KEY (`host_id`) REFERENCES `Users` (`user_id`);
 
-ALTER TABLE `Users` ADD FOREIGN KEY (`user_id`) REFERENCES `Stadiums` (`admin_id`);
+ALTER TABLE `Stadiums` ADD FOREIGN KEY (`admin_id`) REFERENCES `Users` (`user_id`);
+
