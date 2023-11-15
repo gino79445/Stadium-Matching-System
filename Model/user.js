@@ -1,20 +1,8 @@
 const pool = require('./db').pool;
-const Cache = require('../utils/cache');
 
 async function getUser(column, value) {
     try {
-        if (column == 'id') {
-            var cacheKey = `user_${column}_${value}`;
-            const cacheData = await Cache.getCache(cacheKey);
-            if (cacheData) {
-                return cacheData;
-            }
-        }
-
-        const [[result]] = await pool.query(`SELECT * FROM user WHERE ${column} = ?`, [value]);
-
-        if (column == 'id')
-            Cache.addCache(cacheKey, result, { expire: 60 * 60 * 24, resetExpire: true });
+        const [[result]] = await pool.query(`SELECT * FROM Users WHERE ${column} = ?`, [value]);
 
         return result;
     } catch (err) {
@@ -23,10 +11,20 @@ async function getUser(column, value) {
     }
 }
 
-async function createUser(email, password, name ) {
+async function createUser(email, name, password ,age, gender, badminton, basketball, volleyball ) {
     try {
-        const [result] = await pool.query(`INSERT INTO user (email, password, name) VALUES (?, ?, ?)`, [email, password, name]);
-        return result.insertId;
+        const [userResult] = await pool.query(
+            'INSERT INTO Users (Email, password, Name, Age, Gender) VALUES (?, ?, ?, ?, ?)',
+            [email, password, name, age, gender]
+        );
+
+        const userId = userResult.insertId;
+        await pool.query(
+            'INSERT INTO Level (user_id, Badminton, Basketball, Volleyball) VALUES (?, ?, ?, ?)',
+            [userId, badminton || 0, basketball || 0, volleyball || 0]
+        );  
+
+        return userId;
     } catch (err) {
         console.log(err);
         return false;

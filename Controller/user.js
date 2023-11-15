@@ -1,11 +1,12 @@
-const model = require('../Model/user_model');
+const model = require('../Model/user');
 const generateJWT = require('../utils/authorization').generateJWT;
 const hashPassword = require('../utils/authorization').hashPassword;
 
 require('dotenv').config('../.env');
 async function signup(req, res) {
 
-    if (!req.body.email || !req.body.password || !req.body.name) {
+    if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
+      || !req.body.gender || !req.body.badminton || !req.body.basketball || !req.body.volleyball || !req.body.self_intro) {
         return res.status(400).send('Missing value');
     }
 
@@ -18,15 +19,14 @@ async function signup(req, res) {
     if (user) {
         return res.status(400).send('Email already exists');
     }
-
-    const user_id = await model.createUser(req.body.email, hashPassword(req.body.password), req.body.name, req.body.age, req.body.gender, req.body.badminton, req.body.basketball,  req.body.table_tennis, req.body.baseball ,req.body.self_intro);
+    const { email, name, age, gender, badminton, basketball, volleyball,password } = req.body;
+    const user_id = await model.createUser(email, name, hashPassword(password) ,age, gender, badminton, basketball, volleyball )
 
     if (!user_id) {
         return res.status(500).send('Internal server error');
     }
-
-    const result = await generateJWT(user_id);
-    return res.status(200).send({ token: result });
+    req.session.user_id = user_id;
+    return res.status(200).send({ user_id: user_id });
 }
 
 function signin(req, res) {
@@ -46,13 +46,13 @@ function signin(req, res) {
         if (user.password !== hashPassword(req.body.password)) {
             return res.status(400).send('Password does not match');
         }
-
+        req.session.user_id = user.id;
         const result = {
-            user_id: user.id,
-            name: user.name,
-            token: generateJWT(user.id)
+            user_id: user.user_id,
+            name: user.Name,
 
         }
+      console.log(result);
         return res.status(200).json(result);
     }).catch((err) => {
         console.log(err);

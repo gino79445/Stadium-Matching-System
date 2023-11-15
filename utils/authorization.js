@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-async function authorization(req, res, next) {
+async function JWTauthor(req, res, next) {
 
   const failedResponse = { error: 'Wrong Token' };
 
@@ -53,9 +53,17 @@ function hashPassword(password) {
   return crypto.createHash('sha256').update(password).digest('base64');
 }
 
+const sessionAuthor = (req, res, next) => {
+  if (req.session.userId) {
+    next();
+  } else {
+    res.status(401).json({ error: 'Unauthorized' });
+  }
+};
 module.exports = {
-  authorization,
+  JWTauthor,
   generateJWT,
-  hashPassword
+  hashPassword,
+  sessionAuthor
 };
 

@@ -20,8 +20,7 @@ Input Format
     gender : string
     badminton : int,
     basketball: int,
-    table_tennis: int
-    baseball : int
+    volleyball : int,
     self_intro : str 
     
 }
@@ -30,7 +29,7 @@ Input Format
 Response Format 
 ```
 {
-    token: JWT
+    "user_id" : int
 }
 ```
 
@@ -53,7 +52,7 @@ Input Format
 Response Format 
 ```
 {
-    token: JWT
+    user_id : int
 }
 ```
 
@@ -77,11 +76,10 @@ Input Format
 {
     name: string,
     email : string
-    self_intro: string
+    self_intro: string 
     badminton : int,
     basketball: int,
-    table_tennis: int
-    baseball : int
+    volleyball : int,
 }
 ```
 
@@ -122,7 +120,7 @@ Input Format
 Response Format
 ```
 {
-    token: JWT
+    user_id : int
 }
 ```
 
@@ -184,9 +182,7 @@ Response Format
     picture: string,
     badminton : int,
     basketball: int,
-    table_tennis: int
-    baseball : int
-    rqcode: string
+    volleyball : int,    rqcode: string
 }
 ```
 # Home
