@@ -444,7 +444,7 @@ Response Format
 }
 ```
 
-## get stadium detail
+### get stadium detail
 
 API URL:/api/stadium/:catogory/:stadium_id
 
@@ -594,7 +594,7 @@ Response Format
     vending: bool,
     water: bool
 }
-``````
+```
 
 ### summit feeback
 API URL: /api/feedback/:stadium_id
