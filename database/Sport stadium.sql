@@ -7,7 +7,7 @@ CREATE TABLE `Users` (
   `password` varchar(100),
   `Phone_number` integer,
   `Image` varchar(100) NOT NULL,
-  `Note` text,
+  `self_intro` varchar(100),
   `Created_at` timestamp,
   `admin` bool DEFAULT 0
 );
