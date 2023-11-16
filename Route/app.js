@@ -1,6 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const userRouter = require('./user');
+const homeRouter = require('./home');
+const stadiumRouter = require ('./stadium')
+const stadiumRouter = require('');
 const morgan = require('morgan');
 const app = express();
 const { Session } = require('../utils/session');
@@ -28,5 +31,7 @@ app.get('/health', (req, res) => {
 app.use('/static', express.static(process.env.UPLOAD_PATH));
 app.use('/default_images', express.static(process.env.DEFAULT_PROFILE_PATH));
 app.use('/api/user', userRouter);
+app.use('/api/home',homeRouter);
+app.use('/api/stadium',stadiumRouter);
 
 module.exports = { app };
