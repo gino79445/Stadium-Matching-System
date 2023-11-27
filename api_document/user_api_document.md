@@ -80,6 +80,11 @@ Input Format
     badminton : int,
     basketball: int,
     volleyball : int,
+    tabletennis: int,
+    baseball: int,
+    tennis: int,
+    swimming: int,
+    gym: int
 }
 ```
 
@@ -182,7 +187,8 @@ Response Format
     picture: string,
     badminton : int,
     basketball: int,
-    volleyball : int,    rqcode: string
+    volleyball : int,
+    qrcode: string
 }
 ```
 # Home
@@ -207,19 +213,31 @@ Response Format
   
     activity : [
         {
-            id: int
+            reservation_id: int
             picture : string
             stadium_id: int
+            date: date
+            price: int
+            level: int
+            remain: int
         },
         {
-            id: int  
+            reservation_id: int
             picture : string
             stadium_id: int
+            date: date
+            price: int
+            level: int
+            remain: int
         },
         {
-            id: int
+            reservation_id: int
             picture : string
             stadium_id: int
+            date: date
+            price: int
+            level: int
+            remain: int
         }
         
 

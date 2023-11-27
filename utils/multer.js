@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // Set the destination folder where the uploaded files will be stored
-        cb(null, process.env.UPLOAD_PATH);
+        cb(null, '/home/ubuntu/Stadium-Matching-System/app');
     },
     filename: function (req, file, cb) {
         // Set the filename of the uploaded file

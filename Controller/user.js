@@ -1,12 +1,11 @@
 const model = require('../Model/user');
-const generateJWT = require('../utils/authorization').generateJWT;
+//const generateJWT = require('../utils/authorization').generateJWT;
 const hashPassword = require('../utils/authorization').hashPassword;
-
 require('dotenv').config('../.env');
 async function signup(req, res) {
 
     if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
-      || !req.body.gender || !req.body.badminton || !req.body.basketball || !req.body.volleyball || !req.body.self_intro) {
+      || !req.body.gender || !req.body.self_intro) {
         return res.status(400).send('Missing value');
     }
 
@@ -19,13 +18,15 @@ async function signup(req, res) {
     if (user) {
         return res.status(400).send('Email already exists');
     }
-    const { email, name, age, gender, badminton, basketball, volleyball,password } = req.body;
-    const user_id = await model.createUser(email, name, hashPassword(password) ,age, gender, badminton, basketball, volleyball )
+
+
+    const { email, name, password, age, gender, badminton, basketball, volleyball, baseball, tennis, tabletennis, swimming, gym, self_intro} = req.body;
+    const user_id = await model.createUser(email, name, hashPassword(password) ,age, gender, badminton, basketball, volleyball, baseball, tennis, tabletennis, swimming, gym,  self_intro )
 
     if (!user_id) {
         return res.status(500).send('Internal server error');
     }
-    req.session.user_id = user_id;
+    req.session.userId = user_id;
     return res.status(200).send({ user_id: user_id });
 }
 
@@ -46,7 +47,7 @@ function signin(req, res) {
         if (user.password !== hashPassword(req.body.password)) {
             return res.status(400).send('Password does not match');
         }
-        req.session.user_id = user.id;
+        req.session.userId = user.user_id;
         const result = {
             user_id: user.user_id,
             name: user.Name,
@@ -61,86 +62,112 @@ function signin(req, res) {
 }
 
 function updateProfile(req, res) {
+    const userId = req.session.userId;
+    const { name, email, self_intro, badminton, basketball, volleyball, tabletennis, baseball, tennis, swimming, gym } = req.body;
 
-    if (!req.body.name || !req.body.self_intro) {
+    model.updateUser(userId, name, email, self_intro, badminton, basketball, volleyball, tabletennis, baseball, tennis, swimming, gym)
+        .then(() => {
+            return res.status(200).json({ user_id: userId });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).send('Internal server error');
+        });
+}
+
+
+// function updateProfile(req, res) {
+//     const userId = req.session.userId;
+//     const updates = req.body;
+
+//     model.updateUser(userId, updates).then(() => {
+//         return res.status(200).send({ user_id: userId });
+//     }).catch((err) => {
+//         console.log(err);
+//         return res.status(500).send('Internal server error');
+//     });
+// }
+
+async function updatePassword(req, res) {
+    if (!req.body.old_password||!req.body.new_password) {
         return res.status(400).send('Missing value');
     }
+    const userId = req.session.userId;
+    try {
+        const user = await model.findUserById(userId);
+        if (!user) {
+            return res.status(400).json({ error: 'User not found' });
+        }
 
-    let user_id = req.authorization_id;
+        if (user.password !== hashPassword(req.body.old_password)) {
+            return res.status(400).send('Password does not match');
+        }
 
-    model.updateUser(user_id, req.body.name, req.body.self_intro).then((result) => {
-        return res.status(200).send({ user_id: user_id });
-    }).catch((err) => {
-        console.log(err);
-        return res.status(500).send('Internal server error');
-    });
+        await model.updatePassword(userId, hashPassword(req.body.new_password));
+        res.json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+
 
 }
 
 function updateProfilePicture(req, res) {
     if (!req.file) {
-        return res.status(400).send('Missing value');
+        return res.status(400).send('No file uploaded');
     }
 
-    let user_id = req.authorization_id;
+    const userId = req.session.userId;
+    const imageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
 
-    const imageUrl = `https://${process.env.PUBLIC_IP}/static/` + req.fileName;
-
-    model.updateProfilePicture(user_id, imageUrl).then((result) => {
-        return res.status(200).send({ imageUrl: imageUrl });
-    }
-    ).catch((err) => {
-        console.log(err);
-        return res.status(500).send('Internal server error');
-    }
-    );
+    model.updateProfilePicture(userId, imageUrl)
+        .then(() => {
+            return res.status(200).send({ imageUrl: imageUrl });
+        })
+        .catch((err) => {
+            console.error(err);
+            return res.status(500).send('Internal server error');
+        });
 }
 
-function getProfile(req, res) {
-    if (!req.query.user_id) {
-        return res.status(400).send('Missing value');
-    }
+async function getUserProfile(req, res) {
+    const userId = req.query.userId || req.session.userId;
 
-    model.getUser('id', req.query.user_id).then((user) => {
+    try {
+        const user = await model.getUser('user_id',userId);
         if (!user) {
-            return res.status(400).send('User does not exist');
+            return res.status(404).json({ error: 'User not exist' });
         }
 
-        return res.status(200).send({
-            user_id: user.user_id,
-            name: user.name,
-            email: user.email,
-            picture: user.picture,
-            self_intro: user.self_intro
+        const level = await model.getUserLevel(userId);
+        const qrCodeData = await model.generateQRCode(user.user_id.toString());
+
+        res.json({ 
+            user_id: user.user_id, 
+            name: user.name, 
+            email: user.email, 
+            picture: user.Image, 
+            badminton: level.Badminton, 
+            basketball: level.Basketball,
+            volleyball: level.Volleyball,
+            baseball: level.Baseball,
+            tabletennis: level.Tabletennis, 
+            swimming: level.Swimming,
+            tennis: level.Tennis,
+            gym: level.Gym,
+            qrcode: qrCodeData 
         });
-    }).catch((err) => {
-        console.log(err);
-        return res.status(500).send('Internal server error');
-    });
-}
-
-function updatePassword(req, res) {
-    if (!req.body.password) {
-        return res.status(400).send('Missing value');
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
-
-    let user_id = req.authorization_id;
-
-    model.updatePassword(user_id, hashPassword(req.body.password)).then((result) => {
-        return res.status(200).send({ user_id: user_id });
-    }).catch((err) => {
-        console.log(err);
-        return res.status(500).send('Internal server error');
-    });
-
-
 }
+
 
 module.exports = {
     signup,
     signin,
     updateProfile,
     updateProfilePicture,
-    getProfile,
+    getUserProfile,
     updatePassword
 }

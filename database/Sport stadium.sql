@@ -5,9 +5,8 @@ CREATE TABLE `Users` (
   `Name` varchar(100) NOT NULL,
   `Email` varchar(100) NOT NULL,
   `password` varchar(100),
-  `Phone_number` integer,
-  `Image` varchar(100) NOT NULL,
   `self_intro` varchar(100),
+  `picture` varchar(100),
   `Created_at` timestamp,
   `admin` bool DEFAULT 0
 );
@@ -16,7 +15,12 @@ CREATE TABLE `Level` (
   `user_id` int PRIMARY KEY,
   `Badminton` integer DEFAULT 0,
   `Basketball` integer DEFAULT 0,
-  `Volleyball` integer DEFAULT 0
+  `Volleyball` integer DEFAULT 0,
+  `Baseball` integer DEFAULT 0,
+  `Tabletennis` integer default 0,
+  `Swimming` integer default 0,
+  `Tennis` integer default 0,
+  `Gym` integer default 0
 );
 
 CREATE TABLE `Order_info` (
@@ -28,12 +32,15 @@ CREATE TABLE `Order_info` (
 
 CREATE TABLE `Stadiums` (
   `stadium_id` integer AUTO_INCREMENT,
+  `name`varchar(50),
+  `address` varchar(100),
   `price` integer NOT NULL,
   `max_capacity` int NOT NULL,
   `availble` bool NOT NULL,
   `picture` varchar(100) DEFAULT "http://test.com",
   `admin_id` integer NOT NULL,
   `rule` varchar(100),
+  `category` varchar(50),
   PRIMARY KEY (`stadium_id`),
   INDEX `admin_idx` (`admin_id`)
 );
@@ -47,10 +54,13 @@ CREATE TABLE `TimeSlots` (
 CREATE TABLE `Activity` (
   `reservation_id` int PRIMARY KEY AUTO_INCREMENT,
   `stadium_id` int NOT NULL,
+  `title` varchar(100),
   `timeslot` int,
   `note` varchar(100),
   `host_id` int,
-  `max` int NOT NULL
+  `max` int NOT NULL,
+  `date` date,
+  `level` int
 );
 
 CREATE TABLE `Feedback` (
@@ -63,10 +73,11 @@ CREATE TABLE `Feedback` (
 
 CREATE TABLE `Equipments` (
   `stadium_id` int PRIMARY KEY,
-  `water_faucet` bool DEFAULT 0,
+  `water` bool DEFAULT 0,
   `bathroom` bool DEFAULT 0,
-  `air_con` bool DEFAULT 0,
-  `vending` bool DEFAULT 0
+  `air_condition` bool DEFAULT 0,
+  `vending` bool DEFAULT 0,
+  `rule` varchar(100)
 );
 
 CREATE TABLE `sessions` (
