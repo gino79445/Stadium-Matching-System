@@ -61,6 +61,7 @@ CREATE TABLE `Activity` (
   `max` int NOT NULL,
   `date` date,
   `level` int
+  `status` varchar(100) DEFAULT "pending",
 );
 
 CREATE TABLE `Feedback` (
@@ -90,8 +91,6 @@ CREATE TABLE `sessions` (
 ALTER TABLE `Level` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
 
 ALTER TABLE `Order_info` ADD FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`);
-
-ALTER TABLE `Activity` ADD FOREIGN KEY (`reservation_id`) REFERENCES `Order_info` (`reservation_id`);
 
 ALTER TABLE `Activity` ADD FOREIGN KEY (`stadium_id`) REFERENCES `Stadiums` (`stadium_id`);
 

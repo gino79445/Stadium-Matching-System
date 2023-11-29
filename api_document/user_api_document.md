@@ -297,16 +297,19 @@ Header
     Authorization: "Bearer ${JWT}"
 }
 ```
-
+status : "pending" or "finish"
 Response Format
 ```
 {
-    status: bool,
-    peoples : int
-    time: string,
+    status: string,
+    peoples: int
+    time: int,
+    note: string,
+    max: int,
+    level: int,
+    fee: int 
     stadium : {
         name: string,
-        fee: string,
         bathroom: bool,
         air_condition: bool,
         vending: bool,
@@ -329,9 +332,32 @@ Response Format
 }
 ```
 
+### join
+
+API URL:/api/activity/join/:id
+
+Method: post 
+
+response type: application/json
+
+Header
+```
+{
+    Authorization: "Bearer ${JWT}"
+}
+```
+
+Response Format
+```
+{
+    activity_id: int
+}
+```
+
+
 ### list my activities
 
-API URL:/api/activity/list/:status
+API URL:/api/activity/my/:status
 
 Method: GET
 
@@ -366,7 +392,7 @@ Response Format
 ```
 
 ### leave activity
-API URL: /api/activity/:activity/leave
+API URL: /api/activity/leave/activity_is
 
 Method: DELETE
 
