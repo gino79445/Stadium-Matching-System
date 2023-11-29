@@ -21,7 +21,7 @@ async function createUser(email, name, password ,age, gender, badminton, basketb
 
         const userId = userResult.insertId;
         await pool.query(
-            'INSERT INTO Level (user_id, Badminton, Basketball, Volleyball, Baseball, Tennis, Tabletennis, Swimming, Gym) VALUES (?, ?, ?, ?)',
+            'INSERT INTO Level (user_id, Badminton, Basketball, Volleyball, Baseball, Tennis, Tabletennis, Swimming, Gym) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [userId, badminton || 0, basketball || 0, volleyball || 0, baseball || 0, tennis || 0, tabletennis || 0, swimming || 0, gym || 0]
         );  
 
