@@ -4,7 +4,9 @@ async function getAllActivity() {
     try {
         const Query = `SELECT  A.reservation_id AS id, S.picture, S.name  
                        FROM Activity AS A 
-                       INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id`;  
+                       INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
+                       WHERE A.status = 'pending'
+                       ORDER BY A.reservation_id DESC`;  
         const [activity] = await pool.query(Query);
         return { activity: activity };
     } catch (err) {
@@ -23,7 +25,8 @@ async function getActivity(id) {
                      INNER JOIN Stadiums AS S on S.stadium_id =  A.reservation_id
                      INNER JOIN Users AS U on U.user_id = A.host_id
                      INNER JOIN Equipments AS E on E.stadium_id = S.stadium_id
-                     WHERE A.reservation_id = ?`;
+                     WHERE A.reservation_id = ? 
+                     ORDER BY A.reservation_id DESC`;
         const [activity] = (await pool.query(Query, [id, id]))[0];
         Query = `SELECT U.user_id, U.Name, U.picture FROM Order_info AS O
                  INNER JOIN Users AS U on U.user_id = O.user_id
@@ -87,7 +90,7 @@ async function myActivity(userId, Status) {
                      FROM Order_info AS O
                      INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                      INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
-                     WHERE O.user_id = ? AND A.status = ?`;
+                     WHERE O.user_id = ? AND A.status = ? ORDER BY A.reservation_id DESC`;
         const [activity] = await pool.query(Query, [userId, Status]);
         return { activity: activity };
     } catch (err) {

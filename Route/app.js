@@ -4,6 +4,8 @@ const userRouter = require('./user');
 const homeRouter = require('./home');
 const stadiumRouter = require ('./stadium')
 const activityRouter = require('./activity');
+const eventRouter = require('./event');
+const feedbackRouter = require('./feedback');
 const morgan = require('morgan');
 const app = express();
 const { Session } = require('../utils/session');
@@ -34,4 +36,6 @@ app.use('/api/user', userRouter);
 app.use('/api/home',homeRouter);
 app.use('/api/stadium',stadiumRouter);
 app.use('/api/activity', activityRouter);
+app.use('/api/event', eventRouter);
+app.use('/api/feedback', feedbackRouter);
 module.exports = { app };

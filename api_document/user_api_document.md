@@ -578,10 +578,11 @@ Response Format
    
     event: [
         {
-   
+            event_id: int
             stadium_id: int,
             activity_id: int
-            name: string,
+            stadium_name: string,
+            titile: string,
             is_read: int,
             message : string
         }, ...
@@ -591,9 +592,9 @@ Response Format
 
 ### Read event
 
-API URL: /api/event/:activity_id/read
+API URL: /api/event/read/:activity_id
 
-Method: POST
+Method: PUT
 
 response type: application/json
 
@@ -631,12 +632,15 @@ Header
 Response Format
 ```
 {
-    name: string,
-    fee: string,
-    bathroom: bool,
-    air_condition: bool,
-    vending: bool,
-    water: bool
+    stadium: 
+            {
+                name: string,
+                fee: string,
+                bathroom: bool,
+                air_condition: bool,
+                vending: bool,
+                water: bool
+            }
 }
 ```
 
