@@ -297,7 +297,7 @@ Header
     Authorization: "Bearer ${JWT}"
 }
 ```
-status : "pending" or "finish"
+status : "joinable" or "joined"
 Response Format
 ```
 {
@@ -358,6 +358,8 @@ Response Format
 ### list my activities
 
 API URL:/api/activity/my/:status
+
+status = "finish" or "pending"
 
 Method: GET
 
@@ -578,7 +580,6 @@ Response Format
    
     event: [
         {
-            event_id: int
             stadium_id: int,
             activity_id: int
             stadium_name: string,
@@ -608,7 +609,7 @@ Header
 Response Format
 ```
 {
-    activity_id: int
+    order_id: int
 }
 ```
 

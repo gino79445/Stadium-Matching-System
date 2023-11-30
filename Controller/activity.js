@@ -3,9 +3,10 @@ const model = require('../Model/activity');
 require('dotenv').config('../.env');
 
 async function getAllActivity(req, res){
-    
+  
   try{
-        const activity = await model.getAllActivity();
+        const userId = req.session.userId;
+        const activity = await model.getAllActivity(userId);
         return res.status(200).json(activity);
     }catch(err){
         return res.status(500).json({err});
@@ -15,8 +16,9 @@ async function getAllActivity(req, res){
 
 async function getActivity(req, res){
     const { id } = req.params;
+    const userId = req.session.userId;
     try{
-        const activity = await model.getActivity(id);
+        const activity = await model.getActivity(id, userId);
         return res.status(200).json(activity);
     }catch(err){
         return res.status(500).json({err});

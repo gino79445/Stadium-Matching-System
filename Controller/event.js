@@ -18,6 +18,9 @@ async function readEvent (req, res){
     const UserId = req.session.userId;
     try{
         const Event = await model.readEvent(id, UserId);
+        if (!Event){
+            return res.status(400).json({err: 'Can not read'});
+        }
         return res.status(200).json(Event);
     }catch(err){
         return res.status(500).json({err});
