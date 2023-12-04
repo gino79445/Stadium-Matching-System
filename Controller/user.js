@@ -118,7 +118,7 @@ function updateProfilePicture(req, res) {
     }
 
     const userId = req.session.userId;
-    const imageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
+    const imageUrl = `http://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
 
     model.updateProfilePicture(userId, imageUrl)
         .then(() => {
