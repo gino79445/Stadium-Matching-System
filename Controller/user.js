@@ -144,9 +144,10 @@ async function getUserProfile(req, res) {
 
         res.json({ 
             user_id: user.user_id, 
-            name: user.name, 
-            email: user.email, 
-            picture: user.Image, 
+            name: user.Name, 
+            gender: user.Gender,
+            email: user.Email, 
+            picture: user.picture, 
             badminton: level.Badminton, 
             basketball: level.Basketball,
             volleyball: level.Volleyball,
