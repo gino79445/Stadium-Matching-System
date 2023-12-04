@@ -19,7 +19,7 @@ async function getAllActivity(userId) {
 
 async function getActivity(id, userId) {
     try {
-        let Query = `SELECT A.timeslot AS time, A.date, A.note, A.max, A.level, 
+        let Query = `SELECT A.timeslot AS time, A.date, A.note, A.max, A.level, A.title,A.reservation_id AS id,
                             A.host_id AS creator_id, U.Name AS creator_name, U.picture AS creator_picture, 
                             E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,
                             (SELECT COUNT(*) FROM Order_info WHERE reservation_id = ?) AS people
@@ -48,7 +48,9 @@ async function getActivity(id, userId) {
             Status = 'joined';
         }
         const result = {
-            
+           
+            id: activity.id,
+            title: activity.title,
             time: activity.time,
             note: activity.note,
             max: activity.max,

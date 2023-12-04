@@ -301,6 +301,8 @@ status : "joinable" or "joined"
 Response Format
 ```
 {
+    id: int,
+    title: string.
     status: string,
     peoples: int
     time: int,
