@@ -61,7 +61,7 @@ CREATE TABLE `Activity` (
   `max` int NOT NULL,
   `date` date,
   `level` int,
-  `status` varchar(100) DEFAULT "pending",
+  `status` varchar(100) DEFAULT "pending"
 );
 
 CREATE TABLE `Feedback` (
