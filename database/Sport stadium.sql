@@ -60,7 +60,7 @@ CREATE TABLE `Activity` (
   `host_id` int,
   `max` int NOT NULL,
   `date` date,
-  `level` int
+  `level` int,
   `status` varchar(100) DEFAULT "pending",
 );
 
