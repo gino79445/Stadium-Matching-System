@@ -2,13 +2,15 @@ const pool = require('./db').pool;
 
 async function getAllActivity(userId) {
     try {
-        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name  
+        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain
                        FROM Activity AS A 
                        INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
                        INNER JOIN TimeSlots AS T on T.timeslot_id = A.timeslot
+                       INNER JOIN Order_info AS O on O.reservation_id = A.reservation_id
                        WHERE (A.date > DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) 
                               OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) ) 
                        AND A.reservation_id NOT IN (SELECT reservation_id FROM Order_info WHERE user_id = ?)
+                       GROUP BY A.reservation_id
                        ORDER BY A.reservation_id DESC`;  
         const [activity] = await pool.query(Query, [userId]);
         return { activity: activity };
@@ -19,9 +21,9 @@ async function getAllActivity(userId) {
 
 async function getActivity(id, userId) {
     try {
-        let Query = `SELECT A.timeslot AS time, A.date, A.note, A.max, A.level, A.title,A.reservation_id AS id,
+        let Query = `SELECT A.timeslot AS time, date_format(A.date,"%Y-%m-%d") AS date, A.note, A.max, A.level, A.title,A.reservation_id AS id,
                             A.host_id AS creator_id, U.Name AS creator_name, U.picture AS creator_picture, 
-                            E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,
+                            E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,S.picture AS stadium_picture,
                             (SELECT COUNT(*) FROM Order_info WHERE reservation_id = ?) AS people
                      FROM Activity AS A 
                      INNER JOIN Stadiums AS S on S.stadium_id =  A.reservation_id
@@ -53,6 +55,7 @@ async function getActivity(id, userId) {
             title: activity.title,
             time: activity.time,
             note: activity.note,
+            date: activity.date,
             max: activity.max,
             level: activity.level,
             fee: activity.fee,
@@ -65,6 +68,7 @@ async function getActivity(id, userId) {
             },
             stadium: {
                 name: activity.name,  
+                picture: activity.stadium_picture,
                 water: activity.water,
                 bathroom: activity.bathroom,
                 air_condition: activity.air_condition,
