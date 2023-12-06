@@ -271,12 +271,22 @@ Response Format
         {
             id: int,
             picture : string
-            name : string
+            name : string,
+            titile : string,
+            time : int,
+            price : int,
+            level : int,
+            remaining: int
         },
         {
             id: int,
             picture : string
-            name : string
+            name : string,
+            titile : string,
+            time : int,
+            price : int,
+            level : int,
+            remaining: int
         },
         ...
     ]
@@ -309,9 +319,11 @@ Response Format
     note: string,
     max: int,
     level: int,
-    fee: int 
+    fee: int,
+    date: date 
     stadium : {
         name: string,
+        picture : url,
         bathroom: bool,
         air_condition: bool,
         vending: bool,
