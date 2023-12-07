@@ -16,6 +16,7 @@ require('dotenv').config('../.env');
 const corsOptions = {
     //all origin for now
     origin: '*',
+    credentials: true,
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
