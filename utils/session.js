@@ -17,7 +17,7 @@ const Session = session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false,
+      secure: true,
       httpOnly: true,
       sameSite: 'none',
       maxAge: 60 * 60 * 24 * 1000
