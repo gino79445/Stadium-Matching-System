@@ -27,9 +27,6 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/cert.crt:/etc/ssl/cert.crt
       - ./nginx/cert.key:/etc/ssl/cert.key
-    expose:
-      - "4430"
-      - "8080"
     networks:
       - network
 
