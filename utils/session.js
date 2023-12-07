@@ -15,7 +15,13 @@ const Session = session({
     secret: process.env.SESSION_SECRET,
     store: sessionStore,
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+      secure: false,
+      httpOnly: true,
+      sameSite: 'none',
+      maxAge: 60 * 60 * 24 * 1000
+    }
 });
 
 module.exports = {
