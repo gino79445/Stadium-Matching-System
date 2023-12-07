@@ -53,7 +53,7 @@ function signin(req, res) {
             name: user.Name,
 
         }
-      console.log(result);
+        // console.log(result);
         return res.status(200).json(result);
     }).catch((err) => {
         console.log(err);
