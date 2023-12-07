@@ -1,0 +1,35 @@
+services:
+  app:
+    container_name: node
+    image: node:latest
+    command: sh -c "cd /app && mkdir -p static && cd /app/Backend && npm install pm2 -g && npm install && pm2 start index.js&& pm2 save && pm2 startup && pm2 logs "
+    init: true
+    restart: always
+    volumes:
+      - ./:/app/Backend
+      - ./default_images:/app/default_images
+    ports:
+      - "3000:3000"
+    expose:
+      - "3000"
+    networks:
+      - network
+    depends_on:
+      - nginx
+
+  nginx:
+    container_name: nginx
+    image: nginx:mainline-alpine-slim
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/cert.crt:/etc/nginx/cert.crt
+      - ./nginx/cert.key:/etc/nginx/cert.key
+    networks:
+      - network
+
+networks:
+  network:
+
