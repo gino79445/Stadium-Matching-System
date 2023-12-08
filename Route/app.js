@@ -11,12 +11,11 @@ const app = express();
 const { Session } = require('../utils/session');
 require('dotenv').config('../.env');
 
-
-
 const corsOptions = {
-    //all origin for now
-    origin: '*',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+    // allow localhost only for test
+    origin: ["http://localhost:5173", "http://192.168.0.55:5173"],
+    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+    credentials: true
 }
 
 app.use(cors(corsOptions));

@@ -4,19 +4,20 @@ const hashPassword = require('../utils/authorization').hashPassword;
 require('dotenv').config('../.env');
 async function signup(req, res) {
 
-    if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
-      || !req.body.gender || !req.body.self_intro) {
-        return res.status(400).send('Missing value');
-    }
-
-    if (!req.body.email.match(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/)) {
-        return res.status(400).send('Invalid email format');
-    }
-
+    // Move E-mail check first due to frontend validation progress
     const user = await model.getUser('email', req.body.email);
 
     if (user) {
         return res.status(400).send('Email already exists');
+    }
+    
+    if (!req.body.email.match(/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/)) {
+        return res.status(400).send('Invalid email format');
+    }
+
+    if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
+      || !req.body.gender || !req.body.self_intro ) {
+        return res.status(400).send('Missing value');
     }
 
 
