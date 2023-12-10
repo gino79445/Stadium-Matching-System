@@ -13,10 +13,13 @@ require('dotenv').config('../.env');
 
 const corsOptions = {
     // allow localhost only for test
-    origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadiumdev.azureedge.net'],
+    origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadiumdev.azureedge.net','https://www.postman.com/'],
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials: true
 }
+
+app.enable('trust proxy');
+app.set('trust proxy', true);
 
 app.use(cors(corsOptions));
 app.use(morgan('tiny'));
@@ -26,6 +29,12 @@ app.use(Session);
 
 app.get('/health', (req, res) => {
     return res.status(200).send('OK');
+});
+
+app.get('/api/trust', (req, res) => {
+    const ip = req.ip;
+    console.log(app.get("trust proxy"))
+    return res.json({ ip: ip });
 });
 
 //app.use('/.well-known/pki-validation', express.static('/.well-known/pki-validation/'));
