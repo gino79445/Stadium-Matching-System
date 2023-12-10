@@ -14,5 +14,5 @@ router.put('/profile', controller.updateProfile);
 router.put('/profile/picture', upload.single('picture'), controller.updateProfilePicture);
 router.put('/profile/password', controller.updatePassword);
 router.get('/profile', controller.getUserProfile);
-
+router.delete('/logout', controller.logout);
 module.exports = router;

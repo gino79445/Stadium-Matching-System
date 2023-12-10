@@ -165,11 +165,18 @@ async function getUserProfile(req, res) {
 }
 
 
+async function logout(req, res) {
+    req.session.destroy();
+    res.json({ message: 'Logout successfully' });
+}
+
+
 module.exports = {
     signup,
     signin,
     updateProfile,
     updateProfilePicture,
     getUserProfile,
-    updatePassword
+    updatePassword,
+    logout
 }
