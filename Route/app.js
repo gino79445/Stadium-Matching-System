@@ -7,9 +7,15 @@ const activityRouter = require('./activity');
 const eventRouter = require('./event');
 const feedbackRouter = require('./feedback');
 const morgan = require('morgan');
+const logger = require('../utils/logger/initLogger');
+const responseTime = require('response-time');
+const logResponseTime = require('../utils/logger/responseTime');
+const logError = require('../utils/logger/error');
 const app = express();
 const { Session } = require('../utils/session');
 require('dotenv').config('../.env');
+
+logger.info("Starting App...");
 
 const corsOptions = {
     // allow localhost only for test
@@ -18,11 +24,12 @@ const corsOptions = {
     credentials: true
 }
 
+app.use(responseTime())
 app.use(cors(corsOptions));
 app.use(morgan('tiny'));
 app.use(express.json());
 app.use(Session);
-
+app.use(responseTime(logResponseTime));
 
 app.get('/health', (req, res) => {
     return res.status(200).send('OK');
@@ -37,4 +44,7 @@ app.use('/api/stadium',stadiumRouter);
 app.use('/api/activity', activityRouter);
 app.use('/api/event', eventRouter);
 app.use('/api/feedback', feedbackRouter);
+
+app.use(logError);
+
 module.exports = { app };
