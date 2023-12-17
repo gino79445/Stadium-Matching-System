@@ -2,7 +2,7 @@ const pool = require('./db').pool;
 
 async function getAllActivity(userId) {
     try {
-        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain
+        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                        FROM Activity AS A 
                        INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
                        INNER JOIN TimeSlots AS T on T.timeslot_id = A.timeslot
@@ -99,15 +99,25 @@ async function joinActivity(id, userId) {
         throw err;
     }
 } 
-
-
+/*
+SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain
+                       FROM Activity AS A 
+                       INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
+                       INNER JOIN TimeSlots AS T on T.timeslot_id = A.timeslot
+                       INNER JOIN Order_info AS O on O.reservation_id = A.reservation_id
+                       WHERE (A.date > DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) 
+                              OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) ) 
+                       AND A.reservation_id NOT IN (SELECT reservation_id FROM Order_info WHERE user_id = ?)
+                       GROUP BY A.reservation_id
+                       ORDER BY A.reservation_id DESC
+*/
 
 
 async function myActivity(userId, Status) {
 
     try {
         if (Status == 'pending') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name  
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date 
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
@@ -115,11 +125,12 @@ async function myActivity(userId, Status) {
                         WHERE O.user_id = ? 
                         AND (A.date > DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) 
                         OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) ) 
+                        GROUP BY A.reservation_id
                         ORDER BY A.reservation_id DESC`;
             const [activity] = await pool.query(Query, [userId, Status]);
             return { activity: activity };
         }else if (Status == 'finish') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name  
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
@@ -127,6 +138,7 @@ async function myActivity(userId, Status) {
                         WHERE O.user_id = ? 
                         AND (A.date < DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) 
                         OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time < TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) )
+                        GROUP BY A.reservation_id
                         ORDER BY A.reservation_id DESC`;
             const [activity] = await pool.query(Query, [userId, Status]);
             return { activity: activity };

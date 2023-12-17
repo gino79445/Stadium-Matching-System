@@ -16,13 +16,14 @@ const Session = session({
     store: sessionStore,
     proxy: true,
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: false
     cookie: {
       secure: true,
       httpOnly: true,
       sameSite: 'none',
       maxAge: 60 * 60 * 24 * 1000
     }
+
 });
 
 module.exports = {
