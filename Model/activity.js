@@ -2,7 +2,8 @@ const pool = require('./db').pool;
 
 async function getAllActivity(userId) {
     try {
-        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
+        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level,
+                        coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                        FROM Activity AS A 
                        INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
                        INNER JOIN TimeSlots AS T on T.timeslot_id = A.timeslot
@@ -21,14 +22,15 @@ async function getAllActivity(userId) {
 
 async function getActivity(id, userId) {
     try {
-        let Query = `SELECT A.timeslot AS time, date_format(A.date,"%Y-%m-%d") AS date, A.note, A.max, A.level, A.title,A.reservation_id AS id,
+        let Query = `SELECT A.timeslot AS time, date_format(A.date,"%Y-%m-%d") AS date, A.note, A.max, A.level, A.title,A.reservation_id AS id, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain,
                             A.host_id AS creator_id, U.Name AS creator_name, U.picture AS creator_picture, 
                             E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,S.picture AS stadium_picture,
                             (SELECT COUNT(*) FROM Order_info WHERE reservation_id = ?) AS people
                      FROM Activity AS A 
-                     LEFT JOIN Stadiums AS S on S.stadium_id =  A.reservation_id
+                     LEFT JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
                      LEFT JOIN Users AS U on U.user_id = A.host_id
                      LEFT JOIN Equipments AS E on E.stadium_id = S.stadium_id
+                     LEFT JOIN Order_info AS O on O.reservation_id = A.reservation_id
                      WHERE A.reservation_id = ? 
                      ORDER BY A.reservation_id DESC`;
         let [activity] = await pool.query(Query, [id, id]);
@@ -60,6 +62,7 @@ async function getActivity(id, userId) {
             level: activity.level,
             fee: activity.fee,
             people: activity.people,
+            remain: activity.remain,
             status: Status,
             creator: {
                 id: activity.creator_id,
@@ -117,20 +120,22 @@ async function myActivity(userId, Status) {
 
     try {
         if (Status == 'pending') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date 
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , COUNT(O.reservation_id) AS people,
+                        coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
                         INNER JOIN TimeSlots AS T on T.timeslot_id = A.timeslot
                         WHERE O.user_id = ? 
                         AND (A.date > DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) 
-                        OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) ) 
+                        OR (A.date =  DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')) )
                         GROUP BY A.reservation_id
                         ORDER BY A.reservation_id DESC`;
             const [activity] = await pool.query(Query, [userId, Status]);
             return { activity: activity };
         }else if (Status == 'finish') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.level, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , COUNT(O.reservation_id) AS people,
+                        coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
