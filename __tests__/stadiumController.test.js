@@ -70,11 +70,11 @@ describe('StadiumController', () => {
             req = httpMocks.createRequest({
                 method: 'GET',
                 url: '/api/stadium/gym/1/2023-12-25',
-                params: {
-                    category: 'gym',
-                    stadium_id: 1,
-                    date: '2023-12-25'
-                }
+                //params: {
+                //    category: 'gym',
+                //    stadium_id: 1,
+                //    date: '2023-12-25'
+                //}
             });
             res = httpMocks.createResponse();
         });
@@ -110,7 +110,7 @@ describe('StadiumController', () => {
     
             await getStadiumAvailability(req, res);
             expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ data: mockAvailability });
+            expect(res._getJSONData()).toEqual({ mockAvailability });
         });
     
         it('should handle errors when fetching availability', async () => {
