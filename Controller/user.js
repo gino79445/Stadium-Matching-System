@@ -3,7 +3,10 @@ const model = require('../Model/user');
 const hashPassword = require('../utils/authorization').hashPassword;
 require('dotenv').config('../.env');
 async function signup(req, res) {
-
+    if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
+        || !req.body.gender || !req.body.self_intro ) {
+          return res.status(400).send('Missing value');
+      }
     // Move E-mail check first due to frontend validation progress
     const user = await model.getUser('email', req.body.email);
 
@@ -15,10 +18,7 @@ async function signup(req, res) {
         return res.status(400).send('Invalid email format');
     }
 
-    if (!req.body.email || !req.body.password || !req.body.name || !req.body.age
-      || !req.body.gender || !req.body.self_intro ) {
-        return res.status(400).send('Missing value');
-    }
+    
 
 
     const { email, name, password, age, gender, badminton, basketball, volleyball, baseball, tennis, tabletennis, swimming, gym, self_intro} = req.body;
@@ -119,7 +119,7 @@ function updateProfilePicture(req, res) {
     }
 
     const userId = req.session.userId;
-    const imageUrl = `http://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
+    const imageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
 
     model.updateProfilePicture(userId, imageUrl)
         .then(() => {

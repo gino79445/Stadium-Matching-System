@@ -26,9 +26,9 @@ async function getActivity(id, userId) {
                             E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,S.picture AS stadium_picture,
                             (SELECT COUNT(*) FROM Order_info WHERE reservation_id = ?) AS people
                      FROM Activity AS A 
-                     INNER JOIN Stadiums AS S on S.stadium_id =  A.reservation_id
-                     INNER JOIN Users AS U on U.user_id = A.host_id
-                     INNER JOIN Equipments AS E on E.stadium_id = S.stadium_id
+                     LEFT JOIN Stadiums AS S on S.stadium_id =  A.reservation_id
+                     LEFT JOIN Users AS U on U.user_id = A.host_id
+                     LEFT JOIN Equipments AS E on E.stadium_id = S.stadium_id
                      WHERE A.reservation_id = ? 
                      ORDER BY A.reservation_id DESC`;
         let [activity] = await pool.query(Query, [id, id]);

@@ -1,7 +1,7 @@
 const pool = require('./db').pool;
 async function getStadiumsByCategory(category) {
     try {
-        const query = 'SELECT stadium_id, name, picture FROM Stadiums WHERE category = ?';
+        const query = 'SELECT stadium_id, name, picture, price, address FROM Stadiums WHERE category = ?';
         const [stadiums] = await pool.query(query, [category]);
         return stadiums;
     } catch (err) {
