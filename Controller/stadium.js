@@ -50,5 +50,18 @@ async function getStadiumDetails(req, res) {
         res.status(500).json({ error: error.message });
     }
 }
+async function createActivity(req, res) {
+    const { stadium_id,date, time  } = req.params; // Extract from params
 
-module.exports = {getStadiumList,getStadiumAvailability,getStadiumDetails};
+    const { name, people, level, description } = req.body;
+
+    try {
+        const activityId = await model.createActivity(stadium_id, name, people, level, description, date, time);
+        res.status(201).json({ activity_id: activityId });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+module.exports = {getStadiumList,getStadiumAvailability,getStadiumDetails,createActivity};

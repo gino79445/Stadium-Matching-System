@@ -54,12 +54,12 @@ describe('StadiumController', () => {
         });
 
         it('should handle errors', async () => {
-            model.getStadiumsByCategory.mockRejectedValue(new Error('Database error'));
+            model.getStadiumsByCategory.mockRejectedValue(new Error('Internal server error'));
             req.params.category = 'gym';
 
             await getStadiumList(req, res);
             expect(res.statusCode).toBe(500);
-            expect(res._getJSONData()).toEqual({ error: 'Database error' });
+            expect(res._getJSONData()).toEqual({ error: 'Internal server error' });
         });
     });
 
@@ -70,19 +70,21 @@ describe('StadiumController', () => {
             req = httpMocks.createRequest({
                 method: 'GET',
                 url: '/api/stadium/gym/1/2023-12-25',
-                //params: {
-                //    category: 'gym',
-                //    stadium_id: 1,
-                //    date: '2023-12-25'
-                //}
+                params: {
+                    category: 'gym',
+                    stadium_id: 1,
+                    date: '2023-12-25'
+                }
             });
             res = httpMocks.createResponse();
         });
 
         it('should return availability for a stadium', async () => {
-            const mockAvailability = {
-                "data": {
-                    "times": {
+            await getStadiumAvailability(req, res);
+        
+            const expectedResponse = {
+                data: {
+                    times: {
                         "09:00": true,
                         "10:00": true,
                         "11:00": true,
@@ -96,25 +98,23 @@ describe('StadiumController', () => {
                         "19:00": true,
                         "20:00": true
                     },
-                    "people": 0,
-                    "name": "Taipei Arena",
-                    "price": 100,
-                    "rule": "jiiii",
-                    "water": 1,
-                    "bathroom": 0,
-                    "air_condition": 1,
-                    "vending": 1
+                    people: 0/* calculated number based on mockTimeSlots */,
+                    name: "Taipei Arena",
+                    price: 100,
+                    rule: "jiiii",
+                    water: 1,
+                    bathroom: 0,
+                    air_condition: 1,
+                    vending: 1
                 }
             };
-            model.getStadiumAvailability.mockResolvedValue(mockAvailability);
-    
-            await getStadiumAvailability(req, res);
+        
             expect(res.statusCode).toBe(200);
-            expect(res._getJSONData()).toEqual({ mockAvailability });
+            expect(res._getJSONData()).toEqual(expectedResponse);
         });
     
         it('should handle errors when fetching availability', async () => {
-            model.getStadiumAvailability.mockRejectedValue(new Error('Database error'));
+            model.getStadiumAvailability.mockRejectedValue(new Error('Internal server error'));
     
             await getStadiumAvailability(req, res);
             expect(res.statusCode).toBe(500);

@@ -21,7 +21,8 @@ Input Format
 Response Format 
 ```
 {
-    token: JWT
+    user_id: int,
+    admin: bool
 }
 ```
 
@@ -40,11 +41,12 @@ Input Format
 ```
 {
     name: string,
-    type : string,
-    people : int,
-    location: string,
-    intro : string,
+    category : string,
+    max_capacity : int,
+    address: string,
     rule: string,
+    price: int,
+    available: bool,
     bathroom: bool,
     air_condition: bool,
     vending: bool,
@@ -60,38 +62,6 @@ Response Format
 }
 ```
 
-### list stadium API
-
-API URL: /api/admin/stadium/available
-
-Method: POST
-
-response type: application/json
-
-Input Format
-```
-{
-    name: string,
-    type : string,
-    people : int,
-    location: string,
-    intro : string,
-    rule: string,
-    picture: file
-    bathroom: bool,
-    air_condition: bool,
-    vending: bool,
-    water: bool
-    
-}
-```
-
-Response Format 
-```
-{
-    stadium_id : int
-}
-```
 
 ### list API
 
@@ -115,13 +85,23 @@ Response Format
     stadium:[
         {
             id: int,
-            picture : string
-            name : string
+            name : string,
+            address: string,
+            price: int,
+            available: int,
+            picture : string,
+            rule: string,
+            category: string
         },
         {
             id: int,
-            picture : string
-            name : string
+            name : string,
+            address: string,
+            price: int,
+            available: int,
+            picture : string,
+            rule: string,
+            category: string
         },
         ...
     ]

@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const userRouter = require('./user');
 const homeRouter = require('./home');
-const stadiumRouter = require ('./stadium')
+const adminRouter = require('./admin');
+const stadiumRouter = require ('./stadium');
 const activityRouter = require('./activity');
 const eventRouter = require('./event');
 const feedbackRouter = require('./feedback');
@@ -13,7 +14,7 @@ require('dotenv').config('../.env');
 
 const corsOptions = {
     // allow localhost only for test
-    origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadium.azureedge.net','https://www.postman.com/','https://18.235.176.70'],
+    origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadiumdev.azureedge.net','https://www.postman.com/'],
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials: true
 }
@@ -46,4 +47,5 @@ app.use('/api/stadium',stadiumRouter);
 app.use('/api/activity', activityRouter);
 app.use('/api/event', eventRouter);
 app.use('/api/feedback', feedbackRouter);
+app.use('/api/admin', adminRouter);
 module.exports = { app };
