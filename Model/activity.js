@@ -24,7 +24,7 @@ async function getActivity(id, userId) {
     try {
         let Query = `SELECT A.timeslot AS time, date_format(A.date,"%Y-%m-%d") AS date, A.note, A.max, A.level, A.title,A.reservation_id AS id, coalesce((A.max - COUNT(O.reservation_id)),0) AS remain,
                             A.host_id AS creator_id, U.Name AS creator_name, U.picture AS creator_picture, 
-                            E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,S.picture AS stadium_picture,
+                            E.water, E.bathroom, E.air_condition, E.vending, S.price AS fee, S.name,S.picture AS stadium_picture, S.stadium_id,
                             (SELECT COUNT(*) FROM Order_info WHERE reservation_id = ?) AS people
                      FROM Activity AS A 
                      LEFT JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
@@ -70,6 +70,7 @@ async function getActivity(id, userId) {
                 picture: activity.creator_picture
             },
             stadium: {
+                id: activity.stadium_id,
                 name: activity.name,  
                 picture: activity.stadium_picture,
                 water: activity.water,
