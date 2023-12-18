@@ -17,13 +17,13 @@ const Session = session({
     proxy: true,
     resave: false,
     saveUninitialized: false,
-/*    cookie: {
+    cookie: {
       secure: true,
       httpOnly: true,
       sameSite: 'none',
       maxAge: 60 * 60 * 24 * 1000
     }
-*/
+
 });
 
 module.exports = {
