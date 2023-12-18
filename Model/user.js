@@ -11,7 +11,7 @@ async function getUser(column, value) {
     }
 }
 
-async function createUser(email, name, password ,age, gender, badminton, basketball, volleyball, baseball, tennis, tabletennis, swimming, gym,  self_intro ) {
+async function createUser(email, name, password, age, gender, badminton, basketball, volleyball, baseball, tennis, tabletennis, swimming, gym, self_intro) {
     try {
         const selfIntroValue = self_intro || null;
         const [userResult] = await pool.query(
@@ -20,17 +20,28 @@ async function createUser(email, name, password ,age, gender, badminton, basketb
         );
 
         const userId = userResult.insertId;
+
+        // Determine the picture URL based on gender and userId
+        const pictureBaseUrl = 'https://52.8.178.204/static/';
+        const pictureNumber = userId % 3 === 0 ? 3 : userId % 3;
+        const pictureUrl = `${pictureBaseUrl}${gender.toLowerCase()}_${pictureNumber}.png`;
+
+        // Update the Users table with the picture URL
+        await pool.query('UPDATE Users SET picture = ? WHERE user_id = ?', [pictureUrl, userId]);
+
+        // Insert user levels
         await pool.query(
             'INSERT INTO Level (user_id, Badminton, Basketball, Volleyball, Baseball, Tennis, Tabletennis, Swimming, Gym) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [userId, badminton || 0, basketball || 0, volleyball || 0, baseball || 0, tennis || 0, tabletennis || 0, swimming || 0, gym || 0]
-        );  
+        );
 
         return userId;
     } catch (err) {
-        console.log(err);
+        console.error(err);
         return false;
     }
 }
+
 
 async function updateUser(id, name, email, self_intro, badminton, basketball, volleyball, tabletennis, baseball, tennis, swimming, gym) {
     try {

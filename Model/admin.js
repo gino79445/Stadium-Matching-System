@@ -29,8 +29,9 @@ async function createStadium(adminId, name, category, max_capacity, address, rul
         await connection.beginTransaction();
 	    //console.log(adminId);
         // Insert into Stadiums table
-        let query = 'INSERT INTO Stadiums (admin_id, name, category, max_capacity, address, rule, price, availble) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        let [result] = await connection.query(query, [adminId, name, category, max_capacity, address, rule, price, available]);
+        const picture = "https://52.8.178.204/static/B_court3.jpeg";
+        let query = 'INSERT INTO Stadiums (admin_id, name, category, max_capacity, address, rule, price, availble, picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        let [result] = await connection.query(query, [adminId, name, category, max_capacity, address, rule, price, available, picture]);
         const stadiumId = result.insertId;
 
         // Insert into Equipments table
