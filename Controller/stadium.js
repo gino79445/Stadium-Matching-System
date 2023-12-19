@@ -56,8 +56,8 @@ async function createActivity(req, res) {
     const { name, people, level, description } = req.body;
     const userId = req.session.userId;
     try {
-        const activityId = await model.createActivity(userId, stadium_id, name, people, level, description, date, time);
-        res.status(201).json({ activity_id: activityId });
+        const reservation_id = await model.createActivity(userId, stadium_id, name, people, level, description, date, time);
+        res.status(201).json({ reservation_id: reservation_id });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error' });

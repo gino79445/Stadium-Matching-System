@@ -49,9 +49,10 @@ async function getStadiumDetails(stadiumId) {
     }
 }
 async function createActivity(userId, stadiumId, name, people, level, description, date, timeslot) {
-
-    const query = 'INSERT INTO Activity (stadium_id, host_id, title, max, level, note, date, timeslot) VALUES (?, ?, ?,? , ?, ?, ?, ?)';
+    const query = 'INSERT INTO Activity (stadium_id, host_id, title, max, level, note, date, timeslot) VALUES (?, ?, ?, ? , ?, ?, ?, ?)';
     const [result] = await pool.query(query, [stadiumId, userId, name, people, level, description, date, timeslot]);
+    query = `INSERT INTO Order_info (reservation_id, user_id) VALUES (?, ?)`;
+    await pool.query(query, [result.insertId, userId]);
     return result.insertId;
 }
 
