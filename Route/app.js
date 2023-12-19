@@ -14,7 +14,7 @@ require('dotenv').config('../.env');
 
 const corsOptions = {
     // allow localhost only for test
-    origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadiumdev.azureedge.net','https://www.postman.com/'],
+	origin: ["http://localhost:5173", "http://192.168.0.55:5173", 'https://stadium.azureedge.net', 'https://www.postman.com/', 'https://stadium.rdto.io'],
     optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
     credentials: true
 }

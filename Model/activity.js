@@ -1,8 +1,63 @@
 const pool = require('./db').pool;
 
+async function getActivityByCategory(userId, category) {
+    const Query = `
+        SELECT  A.reservation_id AS id, S.picture, S.name, A.title, A.timeslot as time, S.price, A.level, S.address,S.category,
+                coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
+        FROM Activity AS A
+        INNER JOIN Stadiums AS S ON S.stadium_id = A.stadium_id
+        INNER JOIN TimeSlots AS T ON T.timeslot_id = A.timeslot
+        INNER JOIN Order_info AS O ON O.reservation_id = A.reservation_id
+        INNER JOIN Users AS U ON U.user_id = O.user_id
+        INNER JOIN Level AS L ON L.user_id = U.user_id
+        WHERE (A.date > DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))
+                OR (A.date = DATE(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei'))) AND T.start_time >= TIME(CONVERT_TZ(NOW(), 'UTC', 'Asia/Taipei')))
+        AND A.reservation_id NOT IN (SELECT reservation_id FROM Order_info WHERE user_id = ?)
+        AND S.category = ?
+        GROUP BY A.reservation_id
+        ORDER BY A.reservation_id DESC`;
+
+    const [result] = await pool.query(Query, [userId, category]);
+    return result;
+}
+
+
+
+async function getHomeActivity(userId) {
+    try {
+        //Badminton | Basketball | Volleyball | Baseball | Tabletennis | Swimming | Tennis | Gym
+        const Query = `SELECT Badminton, Basketball, Volleyball, Baseball, Tabletennis, Swimming, Tennis, Gym FROM Level WHERE user_id = ?`;
+        const [level] = await pool.query(Query, [userId]);
+        const sports = ['Badminton', 'Basketball', 'Volleyball', 'Baseball', 'Tabletennis', 'Swimming', 'Tennis', 'Gym'];
+        let category = [];
+        for (const sport of sports) {
+          if (level[0][sport] >= 1) {
+          category.push(sport);
+          }
+        }
+        for (const sport of sports) {
+          if (level[0][sport] === 0) {
+          category.push(sport);
+          }
+        }
+        // get activity by category
+        let activity = [];
+        for (const sport of category) {
+            const result = await getActivityByCategory(userId, sport);
+            activity = activity.concat(result);
+        }
+        return { activity: activity };
+        
+    } catch (err) {
+        console.log(err);
+        throw err;
+    }
+}
+
+
 async function getAllActivity(userId) {
     try {
-        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level,
+        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level,S.address,
                         coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                        FROM Activity AS A 
                        INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
@@ -177,5 +232,6 @@ module.exports = {
     getActivity,
     myActivity,
     joinActivity,
-    leaveActivity
+    leaveActivity,
+    getHomeActivity
 };

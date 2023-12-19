@@ -9,8 +9,11 @@ router.post('/signin', controller.signin);
 
 router.use(authorization);
 
-router.post('/stadium/available', controller.stadiumavailable);
+router.post('/stadium/available', upload.single('image'),controller.stadiumavailable);
 router.get('/stadium/list',controller.listStadiums);
+router.put('/feedback/:feedback_id/read', controller.setFeedbackRead);
+router.get('/feedback/:feedback_id', controller.fetchFeedback);
+
 // router.get('/feedback/:feedback_id', controller.stadiumfeedback);
 // router.get('/event', controller.event);
 // router.post('/event/:feedback_id/read', controller.readevent);

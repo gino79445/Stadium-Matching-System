@@ -22,16 +22,15 @@ async function authenticateAdmin(email, password) {
 
 // Model/admin.js
 
-async function createStadium(adminId, name, category, max_capacity, address, rule,  price, available, bathroom, air_condition, vending, water) {
+async function createStadium(adminId, name, category, max_capacity, address, rule,  price, available, bathroom, air_condition, vending, water, imageUrl) {
     const connection = await pool.getConnection();
     
     try {
         await connection.beginTransaction();
 	    //console.log(adminId);
         // Insert into Stadiums table
-        const picture = "https://52.8.178.204/static/B_court3.jpeg";
         let query = 'INSERT INTO Stadiums (admin_id, name, category, max_capacity, address, rule, price, availble, picture) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        let [result] = await connection.query(query, [adminId, name, category, max_capacity, address, rule, price, available, picture]);
+        let [result] = await connection.query(query, [adminId, name, category, max_capacity, address, rule, price, available, imageUrl]);
         const stadiumId = result.insertId;
 
         // Insert into Equipments table
@@ -50,7 +49,6 @@ async function createStadium(adminId, name, category, max_capacity, address, rul
         throw error;
     }
 }
-
 // Add to Model/admin.js
 
 async function listStadiumsByAdmin(adminId) {
@@ -59,5 +57,43 @@ async function listStadiumsByAdmin(adminId) {
     return stadiums;
 }
 
-module.exports = { authenticateAdmin, createStadium, listStadiumsByAdmin };
+async function getFeedback(adminId, feedbackId) {
+    let query;
+    let params = [adminId];
+    //console.log(adminId);
+    //console.log(feedbackId);
+    if (feedbackId.toLowerCase() === 'all') {
+        query = `
+            SELECT s.name, f.feedback_id, f.reservation_id, f.stadium_id, f.read, f.suggestion FROM Feedback f
+            JOIN Stadiums s ON f.stadium_id = s.stadium_id
+            WHERE s.admin_id = ? 
+        `;
+    } else {
+        query = `
+            SELECT s.name, f.feedback_id, f.reservation_id, f.stadium_id, f.read, f.suggestion FROM Feedback f
+            JOIN Stadiums s ON f.stadium_id = s.stadium_id
+            WHERE s.admin_id = ? AND f.feedback_id = ?
+        `;
+        params.push(feedbackId);
+    }
+
+    const [feedback] = await pool.query(query, params);
+    return feedback;
+}
+async function setFeedbackRead(adminId, feedbackId) {
+    //console.log(adminId);
+    //console.log(feedbackId);
+    try {
+        const query = `
+            UPDATE Feedback f
+            SET f.read = 1
+            WHERE  f.feedback_id = ?
+        `;
+        await pool.query(query, [feedbackId]);
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
+}
+module.exports = { authenticateAdmin, createStadium, listStadiumsByAdmin, getFeedback, setFeedbackRead};
 

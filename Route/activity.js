@@ -6,6 +6,7 @@ router.use(express.json());
 
 router.use(authorization);
 
+router.get('/home', controller.getHomeActivity);
 router.get('/:id', controller.getActivity);
 router.get('/', controller.getAllActivity);
 router.post('/join/:id', controller.joinActivity);

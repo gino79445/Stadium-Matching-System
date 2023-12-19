@@ -2,6 +2,20 @@ const model = require('../Model/activity');
 //const hashPassword = require('../utils/authorization').hashPassword;
 require('dotenv').config('../.env');
 
+
+async function getHomeActivity(req, res){
+  const userId = req.session.userId;
+  try{
+        const activity = await model.getHomeActivity(userId);
+        return res.status(200).json(activity);
+    }catch(err){
+        return res.status(500).json({err});
+    }  
+    
+}
+
+
+
 async function getAllActivity(req, res){
   
   try{
@@ -72,5 +86,6 @@ module.exports = {
     getActivity,
     myActivity,
     joinActivity,
-    leaveActivity
+    leaveActivity,
+    getHomeActivity
 }
