@@ -16,8 +16,6 @@ async function signin(req, res) {
 
         if (adminUser) {
             req.session.userId = adminUser.user_id; 
-            // Setting up session or token should be done here
-            // For example, req.session.userId = adminUser.user_id; if using express-session
             return res.status(200).json({ user_id: adminUser.user_id, admin: adminUser.admin });
         } else {
             res.status(401).json({ error: 'Authentication failed' });
