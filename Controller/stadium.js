@@ -51,12 +51,12 @@ async function getStadiumDetails(req, res) {
     }
 }
 async function createActivity(req, res) {
-    const { stadium_id,date, time  } = req.params; // Extract from params
+    const { stadium_id, date, time  } = req.params; // Extract from params
 
     const { name, people, level, description } = req.body;
-
+    const userId = req.session.userId;
     try {
-        const activityId = await model.createActivity(stadium_id, name, people, level, description, date, time);
+        const activityId = await model.createActivity(userId, stadium_id, name, people, level, description, date, time);
         res.status(201).json({ activity_id: activityId });
     } catch (error) {
         console.error(error);

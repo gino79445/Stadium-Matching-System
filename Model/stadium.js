@@ -48,9 +48,10 @@ async function getStadiumDetails(stadiumId) {
         throw err;
     }
 }
-async function createActivity(stadiumId, name, people, level, description, date, timeslot) {
-    const query = 'INSERT INTO Activity (stadium_id, title, max, level, note, date, timeslot) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    const [result] = await pool.query(query, [stadiumId, name, people, level, description, date, timeslot]);
+async function createActivity(userId, stadiumId, name, people, level, description, date, timeslot) {
+
+    const query = 'INSERT INTO Activity (stadium_id, host_id, title, max, level, note, date, timeslot) VALUES (?, ?, ?,? , ?, ?, ?, ?)';
+    const [result] = await pool.query(query, [stadiumId, userId, name, people, level, description, date, timeslot]);
     return result.insertId;
 }
 
