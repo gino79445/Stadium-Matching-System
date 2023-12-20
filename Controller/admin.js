@@ -67,7 +67,16 @@ async function stadiumavailable(req, res) {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
-
+async function listStadiums(req, res) {
+    const userId = req.session.userId; // Acquire user_id from the session
+    try {
+        const stadiums = await model.listStadiumsByAdmin(userId);
+        res.json({ stadium: stadiums });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 async function fetchFeedback(req, res) {
     const adminId = req.session.userId; // Assuming admin ID is stored in the session
     const feedbackId = req.params.feedback_id; // Could be a specific ID or 'all'
