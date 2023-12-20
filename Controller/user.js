@@ -132,8 +132,7 @@ async function updatePassword(req, res) {
 //             return res.status(500).send('Internal server error');
 //         });
 // }
-const fs = require('fs').promises;
-const { uploadBlob } = require('../utils/azureBlobService');
+
 
 async function updateProfilePicture(req, res) {
     if (!req.file) {
