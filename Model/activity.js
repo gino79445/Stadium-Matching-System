@@ -176,8 +176,9 @@ async function myActivity(userId, Status) {
 
     try {
         if (Status == 'pending') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , COUNT(O.reservation_id) AS people,
-                        coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , 
+                        (SELECT COUNT(*) FROM Order_info WHERE reservation_id = A.reservation_id) AS people,
+                        coalesce((A.max - (SELECT COUNT(*) FROM Order_info WHERE reservation_id = A.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
@@ -190,8 +191,9 @@ async function myActivity(userId, Status) {
             const [activity] = await pool.query(Query, [userId, Status]);
             return { activity: activity };
         }else if (Status == 'finish') {
-            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , COUNT(O.reservation_id) AS people,
-                        coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
+            let Query = `SELECT A.reservation_id AS id, S.picture, S.name ,A.title, A.timeslot as time, S.price, A.max, A.level , 
+                        (SELECT COUNT(*) FROM Order_info WHERE reservation_id = A.reservation_id) AS people,
+                        coalesce((A.max - (SELECT COUNT(*) FROM Order_info WHERE reservation_id = A.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                         FROM Order_info AS O
                         INNER JOIN Activity AS A on A.reservation_id = O.reservation_id
                         INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
