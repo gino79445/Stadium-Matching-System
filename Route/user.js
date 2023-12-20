@@ -3,6 +3,7 @@ const router = express.Router();
 const authorization = require('../utils/authorization').sessionAuthor;
 const controller = require('../Controller/user');
 const { upload } = require('../utils/multer');
+
 router.use(express.json());
 
 router.post('/signup', controller.signup);

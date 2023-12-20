@@ -1,4 +1,5 @@
 const model = require('../Model/user');
+const { uploadBlob } = require('../utils/azureBlobService');
 //const generateJWT = require('../utils/authorization').generateJWT;
 const hashPassword = require('../utils/authorization').hashPassword;
 require('dotenv').config('../.env');
@@ -113,23 +114,49 @@ async function updatePassword(req, res) {
 
 }
 
-function updateProfilePicture(req, res) {
+// function updateProfilePicture(req, res) {
+//     if (!req.file) {
+//         return res.status(400).send('No file uploaded');
+//     }
+
+//     const userId = req.session.userId;
+//     const localImageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
+    
+//     model.updateProfilePicture(userId, imageUrl)
+//         .then(() => {
+//             return res.status(200).send({ imageUrl: imageUrl });
+//         })
+//         .catch((err) => {
+//             console.error(err);
+//             return res.status(500).send('Internal server error');
+//         });
+// }
+async function updateProfilePicture(req, res) {
     if (!req.file) {
         return res.status(400).send('No file uploaded');
     }
 
     const userId = req.session.userId;
-    const imageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Assuming multer saves files with a filename
+    const localImageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // Local image URL
 
-    model.updateProfilePicture(userId, imageUrl)
-        .then(() => {
-            return res.status(200).send({ imageUrl: imageUrl });
-        })
-        .catch((err) => {
-            console.error(err);
-            return res.status(500).send('Internal server error');
-        });
+    try {
+        // Upload the file to Azure Blob Storage
+        const fileBuffer = req.file.buffer;
+        const blobName = req.file.originalname; // Or any unique name
+        const azureImageUrl = await uploadBlob(fileBuffer, blobName);
+
+        // Now you have two image URLs: localImageUrl and azureImageUrl
+        // You can save both or choose one as per your requirement
+
+        await model.updateProfilePicture(userId, azureImageUrl); // Update your model to handle Azure URL
+
+        res.status(200).json({ local_image_url: localImageUrl, azure_image_url: azureImageUrl });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Internal server error');
+    }
 }
+
 
 async function getUserProfile(req, res) {
     const userId = req.query.userId || req.session.userId;

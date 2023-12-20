@@ -1,5 +1,7 @@
 const model = require('../Model/admin'); // Assuming you have a corresponding model
 const hashPassword = require('../utils/authorization').hashPassword;
+const { uploadBlob } = require('../utils/azureBlobService');
+
 async function signin(req, res) {
 
     const { email, password } = req.body;
@@ -34,12 +36,16 @@ async function stadiumavailable(req, res) {
     const air_condition = req.body.air_condition || 1;
     const vending = req.body.vending || 1;
     const water = req.body.water || 1;
-    let imageUrl = null;
+    let localImageUrl = null;
+    let azureImageUrl = null;
     if (req.file) {
-        imageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // The URL of the uploaded image
+        localImageUrl = `https://${process.env.PUBLIC_IP}/static/${req.file.filename}`; // The URL of the uploaded image
+        const fileBuffer = req.file.buffer;
+        const blobName = req.file.originalname; // Or any unique name
+        azureImageUrl = await uploadBlob(fileBuffer, blobName);
     }
     try {
-        const stadiumId = await model.createStadium(userId, name, category, max_capacity, address, rule, price, available, bathroom, air_condition, vending, water, imageUrl);
+        const stadiumId = await model.createStadium(userId, name, category, max_capacity, address, rule, price, available, bathroom, air_condition, vending, water, azureImageUrl);
         res.status(201).json({ stadium_id: stadiumId });
     } catch (error) {
         console.error(error);
