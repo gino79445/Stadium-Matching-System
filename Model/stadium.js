@@ -22,12 +22,15 @@ async function getStadiumsByCategory(category) {
 async function getStadiumAvailability(stadiumId, date) {
     const query = `
             SELECT ts.start_time, 
-                   IF(a.date IS NULL, FALSE, TRUE) as booked,
-                   COALESCE(SUM(a.max), 0) as people
-            FROM TimeSlots ts
-            LEFT JOIN Activity a ON ts.timeslot_id = a.timeslot AND a.stadium_id = ? AND a.date = ?
-            GROUP BY ts.start_time
-            ORDER BY ts.start_time;
+            IF(a.date IS NULL, FALSE, TRUE) as booked,
+            COALESCE(SUM(a.max), 0) as people,
+            s.picture
+        FROM TimeSlots ts
+        LEFT JOIN Activity a ON ts.timeslot_id = a.timeslot AND a.date = ?
+        LEFT JOIN Stadiums s ON a.stadium_id = s.stadium_id
+        WHERE s.stadium_id = ?
+        GROUP BY ts.start_time, s.picture
+        ORDER BY ts.start_time;
         `;
         const [results] = await pool.execute(query, [stadiumId, date]);
         return results;
