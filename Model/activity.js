@@ -57,7 +57,7 @@ async function getHomeActivity(userId) {
 
 async function getAllActivity(userId) {
     try {
-        const Query = `SELECT  A.reservation_id AS id, S.picture, S.name , A.title, A.timeslot as time, S.price, A.level,S.address,
+        const Query = `SELECT  A.reservation_id AS id, S.picture, S.category, S.name , A.title, A.timeslot as time, S.price, A.level,S.address,
                         coalesce((A.max - COUNT(O.reservation_id)),0) AS remain, date_format(A.date,"%Y-%m-%d") AS date
                        FROM Activity AS A 
                        INNER JOIN Stadiums AS S on S.stadium_id =  A.stadium_id
