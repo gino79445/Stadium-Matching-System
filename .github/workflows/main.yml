@@ -33,9 +33,6 @@ jobs:
           ls
           rm -rf nginx
           mkdir nginx
-          touch ./nginx/cert.crt
-          touch ./nginx/cert.key
-          touch ./nginx/nginx.conf
           cat <<EOF > ./nginx/cert.crt
           ${{ secrets.CERT }}
           EOF
