@@ -2,7 +2,7 @@ services:
   app:
     container_name: node
     image: node:latest
-    command: sh -c "cd /app && mkdir -p static && cd /app/Backend && npm install pm2 -g && npm install && pm2 start index.js&& pm2 save && pm2 startup && pm2 logs "
+    command: sh -c "cd /app && mkdir -p static && cd /app/Backend && npm install pm2 -g && npm install @azure/storage-blob && npm install && pm2 start index.js&& pm2 save && pm2 startup && pm2 logs "
     init: true
     restart: always
     volumes:
