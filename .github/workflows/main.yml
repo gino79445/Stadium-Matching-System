@@ -45,7 +45,6 @@ jobs:
           cat <<EOF > ./nginx/nginx.conf
           ${{ secrets.NGINX }}
           EOF
-          chmod 666 .env
-          echo ${{ secrets.ENV }} > .env
+          sudo echo ${{ secrets.ENV }} > .env
           sudo docker-compose up -d --build
     
