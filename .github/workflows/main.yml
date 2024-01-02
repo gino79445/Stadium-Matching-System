@@ -40,8 +40,6 @@ jobs:
           cat <<EOF > ./nginx/cert.key
           ${{ secrets.PRIVATE_KEY }}
           EOF
-          cat <<EOF > ./nginx/nginx.conf
-          ${{ secrets.NGINX }}
-          EOF
+          cp nginx.conf ./nginx
           echo ${{ secrets.ENV }} > .env
           sudo docker-compose up -d --build
