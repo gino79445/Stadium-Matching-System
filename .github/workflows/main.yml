@@ -35,9 +35,9 @@ jobs:
             touch ./nginx/cert.crt
             touch ./nginx/cert.key
             touch ./nginx/nginx.conf
-            echo ${{ secrets.CERT }} >> ./nginx/cert.crt
-            echo ${{ secrets.PRIVATE_KEY }} >> ./nginx/cert.key
-            echo ${{ secrets.NGINX }} >> ./nginx/nginx.conf
-            echo ${{ secrets.ENV }} >> .env
+            echo ${{ secrets.CERT }} > ./nginx/cert.crt
+            echo ${{ secrets.PRIVATE_KEY }} > ./nginx/cert.key
+            echo ${{ secrets.NGINX }} > ./nginx/nginx.conf
+            echo ${{ secrets.ENV }} > .env
             sudo docker-compose up -d --build
 
