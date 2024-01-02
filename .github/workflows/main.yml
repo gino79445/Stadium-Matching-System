@@ -30,16 +30,21 @@ jobs:
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_PRIVATE_KEY }}
         script: |
-            ls
-            rm -rf nginx
-            mkdir nginx
-            touch ./nginx/cert.crt
-            touch ./nginx/cert.key
-            touch ./nginx/nginx.conf
-            echo ${{ secrets.CERT }}
-            echo ${{ secrets.CERT }} > ./nginx/cert.crt
-            echo ${{ secrets.PRIVATE_KEY }} > ./nginx/cert.key
-            echo ${{ secrets.NGINX }} > ./nginx/nginx.conf
-            echo ${{ secrets.ENV }} > .env
-            sudo docker-compose up -d --build
-
+          ls
+          rm -rf nginx
+          mkdir nginx
+          touch ./nginx/cert.crt
+          touch ./nginx/cert.key
+          touch ./nginx/nginx.conf
+          cat <<EOF > ./nginx/cert.crt
+          ${{ secrets.CERT }}
+          EOF
+          cat <<EOF > ./nginx/cert.key
+          ${{ secrets.PRIVATE_KEY }}
+          EOF
+          cat <<EOF > ./nginx/nginx.conf
+          ${{ secrets.NGINX }}
+          EOF
+          echo ${{ secrets.ENV }} > .env
+          sudo docker-compose up -d --build
+    
