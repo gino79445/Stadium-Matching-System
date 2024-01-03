@@ -34,12 +34,7 @@ jobs:
           ls
           rm -rf nginx
           mkdir nginx
-          cat <<EOF > ./nginx/cert.crt
-          ${{ secrets.CERT }}
-          EOF
-          cat <<EOF > ./nginx/cert.key
-          ${{ secrets.PRIVATE_KEY }}
-          EOF
-          cp nginx.conf ./nginx
+          echo "${{ secrets.CERT }}" > ./nginx/cert.crt
+          echo "${{ secrets.PRIVATE_KEY }}" > ./nginx/cert.key
           echo "${{ secrets.ENV }}" > .env
           sudo docker-compose up -d --build
