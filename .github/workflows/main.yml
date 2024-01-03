@@ -41,5 +41,5 @@ jobs:
           ${{ secrets.PRIVATE_KEY }}
           EOF
           cp nginx.conf ./nginx
-          echo ${{ secrets.ENV }} > .env
+          echo "${{ secrets.ENV }}" > .env
           sudo docker-compose up -d --build
